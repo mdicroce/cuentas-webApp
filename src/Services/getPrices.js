@@ -10,7 +10,7 @@ var options = {
   },
   headers: {
     'x-rapidapi-host': 'coingecko.p.rapidapi.com',
-    'x-rapidapi-key': 'b3a0fd95fdmsh9054c94d14ccc7cp16d43ajsndb9a6d7a7c2a'
+    'x-rapidapi-key': ""
   }
 };
 export async function  getPrices(){
