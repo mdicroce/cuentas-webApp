@@ -23,6 +23,7 @@ export function AddIngresoEgreso({cuentas = [], egresoIngreso, gasto}){
 				<select name="cuenta" id="" onchange={e => inputHandler(e, setCuentaSelect)} value={cuentaSelect}>
 					{cuentas.map(c => <option key={c.id} value={c.id}><span>{c.name}</span> <span>{c.balance}</span></option>)}
 				</select>
+				<button type='submit' children={gasto ? "Add Gasto" : "Add Ingreso"}></button>
 			</form>
 		</main>
 	)

@@ -1,7 +1,7 @@
 import React from 'react'
 
 export function AddCuenta(props){
-	console.log(props.prices)
+	
 	const [title, setTitle] = React.useState('')
 	const [mount, setMount] = React.useState(0)
 	const [moneda, setMoneda] = React.useState("peso");
@@ -29,7 +29,7 @@ export function AddCuenta(props){
 		}
 		
 	}
-
+	
 	return(
 		<div>
 			<form >
@@ -45,6 +45,7 @@ export function AddCuenta(props){
 					<option value="luna">Luna</option>
 					<option value="usd">Dolar/USDT/DAI</option>
 				</select>
+				<button type="submit">Add Cuenta</button>
 			</form>
 		</div>
 	)

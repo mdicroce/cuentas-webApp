@@ -11,8 +11,12 @@ import { AddCuenta } from './routes/AddCuenta';
 
 function App() {
   const [prices, setPrices] = React.useState('')
+  const [cuentas, setCuentas] = React.useState([])
   React.useEffect(()=>{
+
+    
     getPrices().then(p => setPrices(p))
+    
   },[])
   return (
     <div className="App">
@@ -25,9 +29,7 @@ function App() {
             <Link to="AddCuenta">Add Cuenta</Link>
       </nav>
         <Routes>
-          <Route path="/main" element={<Main/>}>
-            <Route path=':hola' element={<Hola />}/>
-            </Route>
+          <Route path="/main" element={<Main/>}></Route>
           <Route path="/AddGasto" element={<AddIngresoEgreso/>}/>
           <Route path="/AddCuenta" element={<AddCuenta prices={prices}/>}>Add Cuenta</Route>
         </Routes>

@@ -1,5 +1,6 @@
 import axios from "axios";
 
+
  let prices = {}
 var options = {
   method: 'GET',
@@ -10,7 +11,7 @@ var options = {
   },
   headers: {
     'x-rapidapi-host': 'coingecko.p.rapidapi.com',
-    'x-rapidapi-key': ""
+    'x-rapidapi-key': import.meta.env.VITE_API_KEY
   }
 };
 export async function  getPrices(){
