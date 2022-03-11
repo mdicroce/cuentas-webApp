@@ -5,48 +5,71 @@ import { Link } from 'react-router-dom';
 import { Main } from './routes/Main';
 import { AddIngresoEgreso } from './routes/AddIngresoEgreso';
 import { getPrices } from './Services/getPrices';
-import { AddCuenta } from './routes/AddCuenta';
+import { AddAccount } from './routes/AddAccount';
+import { loadInfo, saveInfo } from './Services/apiGet'
+import { SeeAccounts } from './routes/SeeAccounts';
+import { IngresoEgreso, Account } from './models/Account'
 
 
 
 function App() {
   const [prices, setPrices] = React.useState('')
-  const [cuentas, setCuentas] = React.useState([])
-  React.useEffect(()=>{
-
+  const [accounts, setAccounts] = React.useState([])
+  const egresoIngreso = (account, newIE, typeOfGasto) => {
+    let savedAccounts = accounts.map(a => {
+      if(a.title == account){
+        if(typeOfGasto){
+          a.addEgreso(...Object.values(newIE))
+        }
+        else{
+          
+          a.addIngreso(...Object.values(newIE))
+        }
+        return a;
+      }
+      
+      return a;
+    })
+    saveInfo(savedAccounts)
+    setAccounts(savedAccounts)
     
-    getPrices().then(p => setPrices(p))
+  }
+  const addNewAccount = (account) =>{
+    
+    saveInfo([...accounts, account])
+    setAccounts([...accounts, account])
+  }
+  React.useEffect(()=>{
+    
+    getPrices().then(p => {setPrices(p)})
+    loadInfo(setAccounts)
+
+    console.log("hola")
+    
     
   },[])
+  
   return (
-    <div className="App">
-      <nav style={{
-            borderBottom: "solid 1px",
-            paddingBottom: "1rem"
-          }}>
-            <Link to="/main" >Main</Link>
-            <Link to="AddGasto" > AddGasto </Link>
-            <Link to="AddCuenta">Add Cuenta</Link>
-      </nav>
+    
+    <div className="min-h-screen bg-green-900 flex flex-col justify-between relative overflow-hidden">
+     
         <Routes>
-          <Route path="/main" element={<Main/>}></Route>
-          <Route path="/AddGasto" element={<AddIngresoEgreso/>}/>
-          <Route path="/AddCuenta" element={<AddCuenta prices={prices}/>}>Add Cuenta</Route>
+          <Route path="/" element={<Main accounts={accounts} prices={prices}/>}>
+            <Route path="home" element={< SeeAccounts/>}></Route>
+          </Route>
+          <Route path="/ingreso-egreso" element={<AddIngresoEgreso accounts={accounts} egresoIngreso={egresoIngreso}/>}>
+            <Route path=':tipo' element={<AddIngresoEgreso accounts={accounts} egresoIngreso={egresoIngreso}/>}/>
+          </Route>
+          <Route path="/add-account" element={<AddAccount prices={prices} addNewAccount={addNewAccount}/>}></Route>
+          
+          <Route path="/see-accountss" element={<SeeAccounts accounts={accounts}/>} />
         </Routes>
         
         <Outlet />
     </div>
+    
   )
 }
 
 export default App
 
-
-const Hola = (params) => {
-  const p = useParams()
-  return (
-    <>
-      <p>{p.hola}</p>
-    </>
-  )
-}

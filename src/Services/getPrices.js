@@ -15,12 +15,12 @@ var options = {
   }
 };
 export async function  getPrices(){
+	
 	let dolar = await axios.get("https://api-dolar-argentina.herokuapp.com/api/dolarblue");
 	prices.dolar = dolar.data
 	axios.request(options).then(function (response) {
 		prices = { ...prices, ...response.data}
 		toArgy()
-		console.log(prices)
 		
 	}).catch(function (error) {
 		console.error(error);
@@ -34,4 +34,5 @@ function toArgy(){
 	prices.ethArgy = prices.ethereum.usd * prices.dolar.venta;
 	prices.cakeArgy = prices["pancakeswap-token"].usd * prices.dolar.venta;
 	prices.lunaArgy = prices["terra-luna"].usd * prices.dolar.venta;
+	console.log(prices)
 }

@@ -1,29 +1,68 @@
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import React from 'react'
-import { getPrices } from "../Services/getPrices";
+import { Header } from "../components/Header";
+import { IndividualResume } from '../components/IndividualResume'
+import { ResumeMain } from "../components/ResumeMain";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import { HeaderCountOver, accountsTotal } from "../components/HeaderCountOver";
 
-export function Main({gastos}) {
-	const [objeto, setObjeto] = React.useState('')
+export function Main({accounts, prices}) {
+	let navigate = useNavigate()
+	const [selectedAccount, setSelectedAccount] = React.useState({value: "Total", label: `Total ${accountsTotal(accounts)}`})
+	const [showGasto, setShowGasto] = React.useState(true)
+	console.log(prices)
+	const buttonAddFunction = (e) =>{
+		e.preventDefault()
+		navigate(`/ingreso-egreso/${Number(showGasto)}`)
+	}
+	const buttonAddCount = (e) => {
+		e.preventDefault()
+		navigate(`/add-account`)
+	}
 	React.useEffect(()=>{
-	getPrices().then(r => setObjeto(r));
-	},[])
+		setSelectedAccount({value: "Total", label: `Total ${accountsTotal(accounts)}`})
+	},[accounts])
 	return (
-		<main style={{padding: "1rem 0"}}>
-			<ul >
-				<li>
-					<Link to="/AddGasto">Nuevo Gasto</Link>
-				</li>
-				<li>
-					<Link to="/AddIngreso" > Nuevo Ingreso </Link>
-				</li>
-			</ul>
+		<main>
+			<Header  option={showGasto} setOption={setShowGasto} isTotal={true}>
+				<div className="flex flex-row">
+					<HeaderCountOver accounts={accounts} selectedAccount={selectedAccount} setSelectedAccount={setSelectedAccount} prices={prices}/>
+					<button onClick={buttonAddCount} className="bg-red-400">Crear Cuenta</button>
+				</div>
+			</Header>
+			<ResumeMain />
+			<div className="grid xl:grid-cols-5 grid-cols-2">
 
-			<Link to={`/main/hola`}> Hola</Link>
+					{accounts.length > 0 ? individualResumeMap(accounts.filter(a => {
+						if(selectedAccount.value === "Total"){
+							return true;
+						}
+						else{
+							return a.title === selectedAccount.value
+						}
+						
+					}),showGasto, prices) : ""}
+			</div>
+			
+			<button onClick={buttonAddFunction} className="bg-red-400 rounded-full w-12 h-12 fixed bottom-2 right-2" >
+				<FontAwesomeIcon className="text-slate-50" icon={faPlus}/>
+			</button>
 			<Outlet />
-			
-			
-			
 		</main>
 	)
 }
 
+
+const individualResumeMap = (account, gasto, prices) => {
+	let accounts = account.map(ac => {
+		if(gasto){
+			return ac.egresos;
+		}
+		else{
+			return ac.ingresos;
+		}
+	}).flat()
+	
+	return accounts.sort((a,b) => b.fecha - a.fecha).map(g => <IndividualResume key={g.id} gastoIngreso={g} prices={prices} />)
+}
